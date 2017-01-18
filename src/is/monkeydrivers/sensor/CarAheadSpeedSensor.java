@@ -2,9 +2,13 @@ package is.monkeydrivers.sensor;
 
 import is.monkeydrivers.Bus;
 import is.monkeydrivers.Message;
+import is.monkeydrivers.utils.MessageParser;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
+import static java.lang.Double.*;
 import static java.time.Instant.*;
 
 public class CarAheadSpeedSensor implements VirtualSensor {
@@ -21,11 +25,11 @@ public class CarAheadSpeedSensor implements VirtualSensor {
     @Override
     public void receive(Message currentMessage) {
         registerMessage(currentMessage);
-        bus.send(
-                carAheadSpeedMessage(
-                        isReadyToCalculate() ? String.valueOf(calculateSpeed()) : "null"
-                )
-        );
+        bus.send(carAheadSpeedMessage(generateStringForMessage()));
+    }
+
+    private String generateStringForMessage() {
+        return isReadyToCalculate() ? String.valueOf(calculateSpeed()) : "null";
     }
 
     private Message carAheadSpeedMessage(String message) {
@@ -48,7 +52,11 @@ public class CarAheadSpeedSensor implements VirtualSensor {
     }
 
     private double calculateSpeed() {
-        return latest.speed + (distanceDifference() / instantDifferenceInSeconds(latest.instant, old.instant)) * 3.6f;
+        return latest.speed + msToKmh(distanceDifference() / instantDifferenceInSeconds(latest.instant, old.instant));
+    }
+
+    private double msToKmh(double speed) {
+        return speed * 3.6f;
     }
 
     private double distanceDifference() {
@@ -56,8 +64,15 @@ public class CarAheadSpeedSensor implements VirtualSensor {
     }
 
     private boolean isReadyToCalculate() {
-        return old != null && old.isComplete() && latest.isComplete()
-                && old.plate.equals(latest.plate) && !old.plate.equals("null") && !latest.plate.equals("null");
+        return bothInstantAreComplete() && isTheSameCar();
+    }
+
+    private boolean bothInstantAreComplete() {
+        return old != null && old.isComplete() && latest.isComplete();
+    }
+
+    private boolean isTheSameCar() {
+        return old.plate.equals(latest.plate) && !old.plate.equals("null") && !latest.plate.equals("null");
     }
 
     private void registerMessage(Message currentMessage) {
@@ -78,6 +93,14 @@ public class CarAheadSpeedSensor implements VirtualSensor {
         Double distance;
         Double speed;
 
+        private final Map<String, MessageParser> messageParsers = new HashMap();
+
+        {
+            messageParsers.put("distance", message -> distance = parseDouble(message.message()));
+            messageParsers.put("speed", message -> speed = parseDouble(message.message()));
+            messageParsers.put("plate", message -> plate = message.message());
+        }
+
         public InstantMessages(Message currentMessage) {
             this.instant = currentMessage.timestamp();
             setMessage(currentMessage);
@@ -89,14 +112,16 @@ public class CarAheadSpeedSensor implements VirtualSensor {
             return true;
         }
 
-        private void setCurrentMessage(Message currentMessage) {
-            if (currentMessage.type().equals("distance")) distance = Double.parseDouble(currentMessage.message());
-            else if (currentMessage.type().equals("plate")) plate = currentMessage.message();
-            else if (currentMessage.type().equals("speed")) speed = Double.parseDouble(currentMessage.message());
-        }
-
         public boolean isComplete() {
             return plate != null && distance != null && speed != null;
+        }
+
+        private void setCurrentMessage(Message message) {
+            messageParserOfType(message.type()).parse(message);
+        }
+
+        private MessageParser messageParserOfType(String type) {
+            return messageParsers.get(type);
         }
 
     }

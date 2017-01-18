@@ -1,6 +1,6 @@
 package is.monkeydrivers;
 
-import is.monkeydrivers.json.JSONSerializer;
+import is.monkeydrivers.utils.json.JSONSerializer;
 import is.monkeydrivers.sensor.CarAheadPlateSensor;
 import is.monkeydrivers.sensor.CarAheadSpeedSensor;
 import is.monkeydrivers.vehicle.Car;

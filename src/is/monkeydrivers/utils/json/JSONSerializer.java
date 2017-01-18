@@ -1,4 +1,7 @@
-package is.monkeydrivers.json;
+package is.monkeydrivers.utils.json;
+
+import static java.lang.Math.min;
+import static java.lang.String.*;
 
 public class JSONSerializer {
 
@@ -6,8 +9,8 @@ public class JSONSerializer {
 
     public JSONSerializer(String[] fields, String[] values) {
         String json = "";
-        for (int i = 0; i < Math.min(fields.length, values.length); i++)
-            json += "\"" + fields[i] + "\":\"" + values[i] + "\",";
+        for (int i = 0; i < min(fields.length, values.length); i++)
+            json += format("\"%s\":\"%s\",", fields[i], values[i]);
 
         this.json = "{" + (json.endsWith(",") ? json.substring(0, json.length() - 1) : json) + "}";
     }

@@ -1,7 +1,8 @@
-package is.monkeydrivers.json;
+package is.monkeydrivers.utils.json;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.*;
 
 public class JSONDeserializer {
     private final String json;
@@ -11,8 +12,7 @@ public class JSONDeserializer {
     }
 
     public String getValueOfField(String field) {
-        Pattern pattern = Pattern.compile("\"" + field + "\":\"(\\w+)\"");
-        Matcher matcher = pattern.matcher(json);
+        Matcher matcher = compile("\"" + field + "\":\"(\\w+)\"").matcher(json);
         return matcher.find() ? matcher.group(1) : "null";
     }
 }
