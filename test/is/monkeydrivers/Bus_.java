@@ -67,7 +67,6 @@ public class Bus_ {
 
     private Message messageOfType(String type) {
         Message message = mock(Message.class);
-        //doReturn(type).when(message).type();
         when(message.type()).thenReturn(type);
         return message;
     }

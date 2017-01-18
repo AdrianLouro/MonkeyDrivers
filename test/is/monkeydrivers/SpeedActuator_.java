@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.time.Instant;
 
+import static java.time.Instant.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -34,7 +35,7 @@ public class SpeedActuator_ {
 
     @Test
     public void does_not_change_car_speed_when_does_not_know_road_max_speed(){
-        bus.send(createMessage("carAheadSpeed", "10", Instant.now()));
+        bus.send(createMessage("carAheadSpeed", "10", now()));
         assertThat(vehicle.getSpeed(), is(0d));
         vehicle.setSpeed(80);
         assertThat(vehicle.getSpeed(), is(80d));
@@ -42,34 +43,34 @@ public class SpeedActuator_ {
 
     @Test
     public void sets_car_speed_to_max_road_speed(){
-        bus.send(createMessage("roadMaxSpeed", "40", Instant.now()));
+        bus.send(createMessage("roadMaxSpeed", "40", now()));
         assertThat(vehicle.getSpeed(), is(40d));
     }
 
     @Test
     public void reduces_car_speed_to_10_when_car_ahead_drives_at_10_km_per_hour() {
-        bus.send(createMessage("roadMaxSpeed", "40", Instant.now()));
+        bus.send(createMessage("roadMaxSpeed", "40", now()));
         assertThat(vehicle.getSpeed(), is(40d));
-        bus.send(createMessage("carAheadSpeed", "10", Instant.now()));
+        bus.send(createMessage("carAheadSpeed", "10", now()));
         assertThat(vehicle.getSpeed(), is(10d));
     }
 
     @Test
     public void sets_car_speed_to_road_max_speed_when_can_not_calculate_car_ahead_speed() {
-        bus.send(createMessage("roadMaxSpeed", "40", Instant.now()));
+        bus.send(createMessage("roadMaxSpeed", "40", now()));
         assertThat(vehicle.getSpeed(), is(40d));
-        bus.send(createMessage("carAheadSpeed", "10", Instant.now()));
+        bus.send(createMessage("carAheadSpeed", "10", now()));
         assertThat(vehicle.getSpeed(), is(10d));
-        bus.send(createMessage("carAheadSpeed", "null", Instant.now()));
+        bus.send(createMessage("carAheadSpeed", "null", now()));
         assertThat(vehicle.getSpeed(), is(40d));
     }
 
     @Test
     public void does_not_increment_car_speed_to_road_max_speed_if_car_ahead_speed_is_lower() {
-        bus.send(createMessage("roadMaxSpeed", "40", Instant.now()));
-        bus.send(createMessage("carAheadSpeed", "10", Instant.now()));
+        bus.send(createMessage("roadMaxSpeed", "40", now()));
+        bus.send(createMessage("carAheadSpeed", "10", now()));
         assertThat(vehicle.getSpeed(), is(10d));
-        bus.send(createMessage("roadMaxSpeed", "40", Instant.now()));
+        bus.send(createMessage("roadMaxSpeed", "40", now()));
         assertThat(vehicle.getSpeed(), is(10d));
     }
 

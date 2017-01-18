@@ -5,6 +5,8 @@ import is.monkeydrivers.Message;
 
 import java.time.Instant;
 
+import static java.time.Instant.*;
+
 public class CarAheadSpeedSensor implements VirtualSensor {
     private Bus bus;
 
@@ -40,7 +42,7 @@ public class CarAheadSpeedSensor implements VirtualSensor {
 
             @Override
             public Instant timestamp() {
-                return Instant.now();
+                return now();
             }
         };
     }

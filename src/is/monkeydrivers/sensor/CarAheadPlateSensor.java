@@ -6,6 +6,8 @@ import is.monkeydrivers.json.JSONDeserializer;
 
 import java.time.Instant;
 
+import static java.time.Instant.*;
+
 public class CarAheadPlateSensor implements VirtualSensor {
 
     Bus bus;
@@ -17,14 +19,14 @@ public class CarAheadPlateSensor implements VirtualSensor {
 
     @Override
     public void receive(Message message) {
-            bus.send(message(getPlateFrom(message)));
+            bus.send(message(message));
     }
 
     private String getPlateFrom(Message message) {
         return new JSONDeserializer(message.message()).getValueOfField("plate");
     }
 
-    private Message message(final String plate) {
+    private Message message(final Message message) {
         return new Message() {
             @Override
             public String type() {
@@ -33,12 +35,12 @@ public class CarAheadPlateSensor implements VirtualSensor {
 
             @Override
             public String message() {
-                return plate;
+                return getPlateFrom(message);
             }
 
             @Override
             public Instant timestamp() {
-                return Instant.now();
+                return message.timestamp();
             }
         };
     }

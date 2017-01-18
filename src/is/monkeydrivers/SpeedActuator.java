@@ -14,7 +14,7 @@ public class SpeedActuator implements Actuator {
     }
 
     private double calculateNewSpeed() {
-        if (carAheadSpeed == null || (roadMaxSpeed != null && carAheadSpeed > roadMaxSpeed)) return roadMaxSpeed;
+        if (carAheadSpeed == null || (roadMaxSpeed != null && carAheadSpeed > roadMaxSpeed)) return roadMaxSpeed == null ? vehicle.getSpeed() : roadMaxSpeed;
         else if (roadMaxSpeed != null) return carAheadSpeed;
         return vehicle.getSpeed();
     }

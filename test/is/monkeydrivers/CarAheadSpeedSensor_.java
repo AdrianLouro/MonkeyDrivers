@@ -8,6 +8,7 @@ import org.mockito.ArgumentCaptor;
 import java.time.Instant;
 import java.util.List;
 
+import static java.time.Instant.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -33,9 +34,9 @@ public class CarAheadSpeedSensor_ {
 
     @Test
     public void does_not_send_a_car_ahead_speed_message_if_does_not_have_2_messages_with_different_timestamps() {
-        bus.send(createMessage("speed", "50", Instant.now()));
-        bus.send(createMessage("distance", "10", Instant.now()));
-        bus.send(createMessage("plate", "1980FVK", Instant.now()));
+        bus.send(createMessage("speed", "50", now()));
+        bus.send(createMessage("distance", "10", now()));
+        bus.send(createMessage("plate", "1980FVK", now()));
 
         ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
         verify(subscriber, times(3)).receive(captor.capture());
@@ -44,13 +45,13 @@ public class CarAheadSpeedSensor_ {
 
     @Test
     public void does_not_send_a_car_ahead_speed_message_when_the_ahead_car_changes() {
-        bus.send(createMessage("speed", "50", Instant.now()));
-        bus.send(createMessage("distance", "10", Instant.now()));
-        bus.send(createMessage("plate", "1980FVK", Instant.now()));
+        bus.send(createMessage("speed", "50", now()));
+        bus.send(createMessage("distance", "10", now()));
+        bus.send(createMessage("plate", "1980FVK", now()));
 
-        bus.send(createMessage("speed", "50", Instant.now().plusSeconds(2)));
-        bus.send(createMessage("distance", "12", Instant.now().plusSeconds(2)));
-        bus.send(createMessage("plate", "9980FVK", Instant.now().plusSeconds(2)));
+        bus.send(createMessage("speed", "50", now().plusSeconds(2)));
+        bus.send(createMessage("distance", "12", now().plusSeconds(2)));
+        bus.send(createMessage("plate", "9980FVK", now().plusSeconds(2)));
 
         ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
         verify(subscriber, times(6)).receive(captor.capture());
@@ -60,13 +61,13 @@ public class CarAheadSpeedSensor_ {
 
     @Test
     public void sends_53_6_km_per_hour_car_ahead_speed_message_when_driving_at_50_km_per_hour_and_car_ahead_reduces_distance_in_2_meters_in_2_seconds() {
-        bus.send(createMessage("speed", "50", Instant.now()));
-        bus.send(createMessage("distance", "10", Instant.now()));
-        bus.send(createMessage("plate", "1980FVK", Instant.now()));
+        bus.send(createMessage("speed", "50", now()));
+        bus.send(createMessage("distance", "10", now()));
+        bus.send(createMessage("plate", "1980FVK", now()));
 
-        bus.send(createMessage("speed", "50", Instant.now().plusSeconds(2)));
-        bus.send(createMessage("distance", "8", Instant.now().plusSeconds(2)));
-        bus.send(createMessage("plate", "1980FVK", Instant.now().plusSeconds(2)));
+        bus.send(createMessage("speed", "50", now().plusSeconds(2)));
+        bus.send(createMessage("distance", "8", now().plusSeconds(2)));
+        bus.send(createMessage("plate", "1980FVK", now().plusSeconds(2)));
 
         ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
         verify(subscriber, times(6)).receive(captor.capture());
@@ -79,13 +80,13 @@ public class CarAheadSpeedSensor_ {
 
     @Test
     public void sends_null_car_ahead_speed_message_when_driving_at_50_km_per_hour_and_there_is_no_car_ahead() {
-        bus.send(createMessage("speed", "50", Instant.now()));
-        bus.send(createMessage("distance", "-1", Instant.now()));
-        bus.send(createMessage("plate", "null", Instant.now()));
+        bus.send(createMessage("speed", "50", now()));
+        bus.send(createMessage("distance", "-1", now()));
+        bus.send(createMessage("plate", "null", now()));
 
-        bus.send(createMessage("speed", "50", Instant.now().plusSeconds(2)));
-        bus.send(createMessage("distance", "-1", Instant.now().plusSeconds(2)));
-        bus.send(createMessage("plate", "null", Instant.now().plusSeconds(2)));
+        bus.send(createMessage("speed", "50", now().plusSeconds(2)));
+        bus.send(createMessage("distance", "-1", now().plusSeconds(2)));
+        bus.send(createMessage("plate", "null", now().plusSeconds(2)));
 
         ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
         verify(subscriber, times(6)).receive(captor.capture());
@@ -94,17 +95,17 @@ public class CarAheadSpeedSensor_ {
 
     @Test
     public void sends_2_correct_speed_car_ahead_speed_messages_when_driving_at_50_km_per_hour_and_car_ahead_increments_distance_in_2_time_intervals() {
-        bus.send(createMessage("speed", "50", Instant.now()));
-        bus.send(createMessage("distance", "10", Instant.now()));
-        bus.send(createMessage("plate", "1980FVK", Instant.now()));
+        bus.send(createMessage("speed", "50", now()));
+        bus.send(createMessage("distance", "10", now()));
+        bus.send(createMessage("plate", "1980FVK", now()));
 
-        bus.send(createMessage("speed", "50", Instant.now().plusSeconds(2)));
-        bus.send(createMessage("distance", "12", Instant.now().plusSeconds(2)));
-        bus.send(createMessage("plate", "1980FVK", Instant.now().plusSeconds(2)));
+        bus.send(createMessage("speed", "50", now().plusSeconds(2)));
+        bus.send(createMessage("distance", "12", now().plusSeconds(2)));
+        bus.send(createMessage("plate", "1980FVK", now().plusSeconds(2)));
 
-        bus.send(createMessage("speed", "50", Instant.now().plusSeconds(4)));
-        bus.send(createMessage("distance", "16", Instant.now().plusSeconds(4)));
-        bus.send(createMessage("plate", "1980FVK", Instant.now().plusSeconds(4)));
+        bus.send(createMessage("speed", "50", now().plusSeconds(4)));
+        bus.send(createMessage("distance", "16", now().plusSeconds(4)));
+        bus.send(createMessage("plate", "1980FVK", now().plusSeconds(4)));
 
 
         ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
