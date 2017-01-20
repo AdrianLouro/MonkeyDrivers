@@ -1,7 +1,7 @@
 package is.monkeydrivers.vehicle;
 
-public class Car implements Vehicle{
-    double speed;
+public class Car implements Vehicle {
+    private double speed;
 
     @Override
     public void setSpeed(double speed) {
@@ -11,4 +11,5 @@ public class Car implements Vehicle{
     public double getSpeed() {
         return speed;
     }
+
 }

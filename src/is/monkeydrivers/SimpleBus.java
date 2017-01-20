@@ -6,11 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 class SimpleBus implements Bus {
-    private Map<String,List<Subscriber>> subscribers = new HashMap<>();
+    private Map<String, List<Subscriber>> subscribers = new HashMap<>();
 
     @Override
     public Subscription subscribe(Subscriber subscriber) {
-        return types -> {for (String type: types) subscribersOf(type).add(subscriber); };
+        return types -> {
+            for (String type : types) subscribersOf(type).add(subscriber);
+        };
+    }
+
+    @Override
+    public void send(Message message) {
+        subscribersOf(message.type()).forEach(s -> s.receive(message));
     }
 
     private List<Subscriber> subscribersOf(String type) {
@@ -23,8 +30,4 @@ class SimpleBus implements Bus {
             subscribers.put(type, new ArrayList<>());
     }
 
-    @Override
-    public void send(Message message) {
-        subscribersOf(message.type()).forEach(s-> s.receive(message));
-    }
 }

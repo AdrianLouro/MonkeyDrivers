@@ -18,4 +18,5 @@ public class JSONSerializer {
     public String json() {
         return json;
     }
+
 }

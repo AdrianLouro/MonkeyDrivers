@@ -8,7 +8,7 @@ import java.time.Instant;
 
 public class CarAheadPlateSensor implements VirtualSensor {
 
-    Bus bus;
+    private Bus bus;
 
     @Override
     public void registerBus(Bus bus) {
@@ -42,4 +42,5 @@ public class CarAheadPlateSensor implements VirtualSensor {
             }
         };
     }
+
 }

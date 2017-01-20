@@ -40,7 +40,7 @@ public class CarAheadSpeedSensor_ {
 
         ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
         verify(subscriber, times(3)).receive(captor.capture());
-        for (Message message: captor.getAllValues()) assertThat(message.message(), is("null"));
+        for (Message message : captor.getAllValues()) assertThat(message.message(), is("null"));
     }
 
     @Test
@@ -56,7 +56,6 @@ public class CarAheadSpeedSensor_ {
         ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
         verify(subscriber, times(6)).receive(captor.capture());
         for (Message message : captor.getAllValues()) assertThat(message.message(), is("null"));
-
     }
 
     @Test
@@ -73,7 +72,7 @@ public class CarAheadSpeedSensor_ {
         verify(subscriber, times(6)).receive(captor.capture());
 
         List<Message> messages = captor.getAllValues();
-        for (int i = 0; i < messages.size()-1; i++) assertThat(messages.get(i).message(), is("null"));
+        for (int i = 0; i < messages.size() - 1; i++) assertThat(messages.get(i).message(), is("null"));
         assertThat(captor.getValue().type(), is("carAheadSpeed"));
         assertEquals(46.4d, Double.parseDouble(captor.getValue().message()), 0.2);
     }
@@ -113,12 +112,11 @@ public class CarAheadSpeedSensor_ {
         List<Message> messages = captor.getAllValues();
         for (int i = 0; i < messages.size(); i++) {
             assertThat(messages.get(i).type(), is("carAheadSpeed"));
-            if (i == 5|| i == 8) continue;
+            if (i == 5 || i == 8) continue;
             assertThat(messages.get(i).message(), is("null"));
         }
         assertEquals(53.6d, Double.parseDouble(messages.get(5).message()), 0.2);
         assertEquals(57.2d, Double.parseDouble(captor.getValue().message()), 0.2);
-
     }
 
     private Message createMessage(String type, String content, Instant timestamp) {

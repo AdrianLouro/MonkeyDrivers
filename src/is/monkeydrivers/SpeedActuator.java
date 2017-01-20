@@ -58,4 +58,5 @@ public class SpeedActuator implements Actuator {
     private void parseCarAheadSpeed(Message message) {
         carAheadSpeed = message.message().equals("null") ? null : parseDouble(message.message());
     }
+
 }

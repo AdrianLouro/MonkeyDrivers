@@ -46,14 +46,6 @@ public class Acceptance_ {
         bus.subscribe(speedActuator).to("roadMaxSpeed");
     }
 
-    private Message createMessage(String type, String content, Instant timestamp) {
-        Message message = mock(Message.class);
-        when(message.message()).thenReturn(content);
-        when(message.type()).thenReturn(type);
-        when(message.timestamp()).thenReturn(timestamp);
-        return message;
-    }
-
     @Test
     public void speed_actuator_sets_vehicle_speed_and_vehicle_accelerates_to_equalize_car_ahead_speed() {
         bus.send(createMessage("camera", new JSONSerializer(new String[]{"tunnel", "plate"}, new String[]{"true", "1980FVK"}).json(), instantZero.plusSeconds(0)));
@@ -97,6 +89,21 @@ public class Acceptance_ {
     }
 
     @Test
+    public void speed_actuator_sets_vehicle_speed_and_vehicle_does_not_accelerate_to_equalize_car_ahead_speed_when_car_ahead_speed_is_higher_than_max_road_speed() {
+        bus.send(createMessage("roadMaxSpeed", "80", instantZero.plusSeconds(0)));
+        assertThat(vehicle.getSpeed(), is(80d));
+
+        bus.send(createMessage("camera", new JSONSerializer(new String[]{"tunnel", "plate"}, new String[]{"false", "1980FVK"}).json(), instantZero.plusSeconds(0)));
+        bus.send(createMessage("speed", "70", instantZero.plusSeconds(0)));
+        bus.send(createMessage("distance", "10", instantZero.plusSeconds(0)));
+
+        bus.send(createMessage("speed", "70", instantZero.plusSeconds(2)));
+        bus.send(createMessage("camera", new JSONSerializer(new String[]{"tunnel", "plate"}, new String[]{"true", "1980FVK"}).json(), instantZero.plusSeconds(2)));
+        bus.send(createMessage("distance", "50", instantZero.plusSeconds(2)));
+        assertThat(vehicle.getSpeed(), is(80d));
+    }
+
+    @Test
     public void speed_actuator_sets_vehicle_speed_and_vehicle_sets_speed_to_new_max_road_speed() {
         bus.send(createMessage("roadMaxSpeed", "80", instantZero.plusSeconds(0)));
         assertThat(vehicle.getSpeed(), is(80d));
@@ -104,6 +111,14 @@ public class Acceptance_ {
         assertThat(vehicle.getSpeed(), is(60d));
         bus.send(createMessage("roadMaxSpeed", "100", instantZero.plusSeconds(6)));
         assertThat(vehicle.getSpeed(), is(100d));
+    }
+
+    private Message createMessage(String type, String content, Instant timestamp) {
+        Message message = mock(Message.class);
+        when(message.message()).thenReturn(content);
+        when(message.type()).thenReturn(type);
+        when(message.timestamp()).thenReturn(timestamp);
+        return message;
     }
 
 }

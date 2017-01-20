@@ -29,12 +29,12 @@ public class SpeedActuator_ {
     }
 
     @Test
-    public void does_not_change_car_speed_when_have_not_received_any_data(){
+    public void does_not_change_car_speed_when_have_not_received_any_data() {
         assertThat(vehicle.getSpeed(), is(0d));
     }
 
     @Test
-    public void does_not_change_car_speed_when_does_not_know_road_max_speed(){
+    public void does_not_change_car_speed_when_does_not_know_road_max_speed() {
         bus.send(createMessage("carAheadSpeed", "10", now()));
         assertThat(vehicle.getSpeed(), is(0d));
         vehicle.setSpeed(80);
@@ -42,7 +42,7 @@ public class SpeedActuator_ {
     }
 
     @Test
-    public void sets_car_speed_to_max_road_speed(){
+    public void sets_car_speed_to_max_road_speed() {
         bus.send(createMessage("roadMaxSpeed", "40", now()));
         assertThat(vehicle.getSpeed(), is(40d));
     }
@@ -81,4 +81,5 @@ public class SpeedActuator_ {
         when(message.message()).thenReturn(content);
         return message;
     }
+
 }

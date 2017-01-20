@@ -53,4 +53,5 @@ public class CarAheadPlateSensor_ {
         when(message.timestamp()).thenReturn(Instant.now());
         return message;
     }
+
 }

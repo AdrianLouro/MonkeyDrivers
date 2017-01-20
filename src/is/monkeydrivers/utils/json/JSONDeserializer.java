@@ -15,4 +15,5 @@ public class JSONDeserializer {
         Matcher matcher = compile("\"" + field + "\":\"(\\w+)\"").matcher(json);
         return matcher.find() ? matcher.group(1) : "null";
     }
+
 }
